@@ -21,6 +21,7 @@ Dotenv.load
   opt :rts, "Keep tweet with this many retweets", default: 5
   opt :favs, "Keep tweets with this many likes", default: 15
   opt :test, "Load TwitterDelete and immediately exit", type: :boolean, default: false
+  opt :skiplivecalls, "Skip live calls", type: :boolean, default: true
 end
 
 exit if @options[:test]
@@ -78,22 +79,28 @@ user = api_call :user, @options[:username]
 tweets_to_unlike = []
 tweets_to_delete = []
 
-puts "==> Checking likes..."
-total_likes = [user.favorites_count, MAX_API_TWEETS].min
-oldest_likes_page = (total_likes / MAX_LIKES_PER_PAGE).ceil
-
-oldest_likes_page.downto(1) do |page|
-  tweets = api_call :favorites, count: MAX_LIKES_PER_PAGE, page: page
-  tweets_to_unlike += tweets.reject(&method(:too_new?))
+if @options[:skiplivecalls]
+  puts "*** skipping initial live calls per configuration"
 end
 
-puts "==> Checking timeline..."
-total_tweets = [user.statuses_count, MAX_API_TWEETS].min
-oldest_tweets_page = (total_tweets / MAX_TWEETS_PER_PAGE).ceil
+unless @options[:skiplivecalls]
+  puts "==> Checking likes..."
+  total_likes = [user.favorites_count, MAX_API_TWEETS].min
+  oldest_likes_page = (total_likes / MAX_LIKES_PER_PAGE).ceil
 
-oldest_tweets_page.downto(1) do |page|
-  tweets = api_call :user_timeline, count: MAX_TWEETS_PER_PAGE, page: page
-  tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
+  oldest_likes_page.downto(1) do |page|
+    tweets = api_call :favorites, count: MAX_LIKES_PER_PAGE, page: page
+    tweets_to_unlike += tweets.reject(&method(:too_new?))
+  end
+
+  puts "==> Checking timeline..."
+  total_tweets = [user.statuses_count, MAX_API_TWEETS].min
+  oldest_tweets_page = (total_tweets / MAX_TWEETS_PER_PAGE).ceil
+
+  oldest_tweets_page.downto(1) do |page|
+    tweets = api_call :user_timeline, count: MAX_TWEETS_PER_PAGE, page: page
+    tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
+  end
 end
 
 if @options[:archive_given]
