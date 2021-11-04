@@ -14,6 +14,11 @@ jobs:
     - name: Set up Git repository
       uses: actions/checkout@master
 
+    - name: Download Twitter archive file
+      run: |
+        apt-get install -y curl wget
+        wget -O tweets.js ${{secrets.TWEETS_ARCHIVE_URL}}
+
     - name: Set up Ruby
       uses: actions/setup-ruby@master
       with:
@@ -25,7 +30,7 @@ jobs:
         bundle install --jobs 4 --retry 3
 
     - name: Run TwitterDelete
-      run: bundle exec twitter_delete.rb --force
+      run: bundle exec twitter_delete.rb --archive ./tweets.js --force
       env:
         TWITTER_USER: ${{ secrets.TWITTER_USER }}
         TWITTER_DAYS: ${{ secrets.TWITTER_DAYS }}
