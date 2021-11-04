@@ -112,8 +112,7 @@ if @options[:archive_given]
   file_contents.sub! "window.YTD.tweet.part0 = ", ""
 
   JSON.parse(file_contents).each do |tweet|
-    archive_tweet_ids << tweet["id_str"]
-    puts tweet["tweet"]["id_str"]
+    archive_tweet_ids << tweet["tweet"]["id_str"]
   end
 
   archive_tweet_ids.each_slice(MAX_TWEETS_PER_REQUEST) do |tweet_ids|
