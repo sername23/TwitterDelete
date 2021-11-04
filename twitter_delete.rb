@@ -19,7 +19,7 @@ Dotenv.load
   opt :days, "Keep tweets/likes under this many days old", default: (ENV["TWITTER_DAYS"] || 28).to_i
   opt :olds, "Keep tweets/likes more than this many days old", default: 9999
   opt :rts, "Keep tweet with this many retweets", default: 5
-  opt :favs, "Keep tweets with this many likes", default: 5
+  opt :favs, "Keep tweets with this many likes", default: 15
   opt :test, "Load TwitterDelete and immediately exit", type: :boolean, default: false
 end
 
