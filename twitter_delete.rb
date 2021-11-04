@@ -21,7 +21,7 @@ Dotenv.load
   opt :rts, "Keep tweet with this many retweets", default: 5
   opt :favs, "Keep tweets with this many likes", default: 15
   opt :test, "Load TwitterDelete and immediately exit", type: :boolean, default: false
-  opt :skiplivecalls, "Skip live calls", type: :boolean, default: true
+  opt :skiplivecalls, "Skip live calls", type: :boolean, default: false
 end
 
 exit if @options[:test]
