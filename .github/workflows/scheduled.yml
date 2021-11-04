@@ -16,7 +16,7 @@ jobs:
 
     - name: Download Twitter archive file
       run: |
-        apt-get install -y curl wget
+        sudo apt-get install -y wget
         wget -O tweets.js ${{secrets.TWEETS_ARCHIVE_URL}}
 
     - name: Set up Ruby
