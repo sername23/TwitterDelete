@@ -113,7 +113,7 @@ if @options[:archive_given]
 
   JSON.parse(file_contents).each do |tweet|
     archive_tweet_ids << tweet["id_str"]
-    puts tweet["id_str"]
+    puts tweet.tweet["id_str"]
   end
 
   archive_tweet_ids.each_slice(MAX_TWEETS_PER_REQUEST) do |tweet_ids|
